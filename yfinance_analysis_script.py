@@ -3,10 +3,10 @@ import yfinance as yf
 import numpy as np 
 
 # Load original portfolio
-portf = pd.read_csv("fin456_portfolio_holdings.csv")
+portf = pd.read_csv("fin456_portfolio_holdings_t1.csv")
 
 # Load additional portfolio
-additional_portf = pd.read_csv("cg_sector_holdings.csv")
+additional_portf = pd.read_csv("cg_sector_holdings_t1.csv")
 
 def calculate_portfolio_metrics(portf):
     # Separate cash and stock rows
@@ -15,7 +15,7 @@ def calculate_portfolio_metrics(portf):
 
     # Fetch data for the tickers in the portfolio
     tickers = stock_rows['TICKER'].tolist()
-    data = yf.download(tickers, start="2019-01-01", end="2024-01-01", interval="1mo")['Adj Close']
+    data = yf.download(tickers, start="2023-11-11", end="2024-11-11", interval="1mo")['Adj Close']
 
     # Calculate monthly returns
     returns = data.pct_change().dropna()
@@ -64,13 +64,13 @@ original_metrics = calculate_portfolio_metrics(portf)
 additional_metrics = calculate_portfolio_metrics(additional_portf)
 
 # # Download S&P 500 (or another market index) data
-market_data = yf.download('^GSPC', start="2019-01-01", end="2024-01-01", interval="1mo")['Adj Close']
+market_data = yf.download('^GSPC', start="2023-11-11", end="2024-11-11", interval="1mo")['Adj Close']
 
 # # Calculate market monthly returns
 market_returns = market_data.pct_change().dropna()
 
 # Fetch risk-free rate (10-Year Treasury Yield)
-risk_free_data = yf.download('^TNX', start="2019-01-01", end="2024-01-01", interval="1mo")
+risk_free_data = yf.download('^TNX', start="2023-11-11", end="2024-11-11", interval="1mo")
 risk_free_rate = risk_free_data['Adj Close'].dropna().iloc[-1].item() / 100
 
 # Function to calculate Beta and Sharpe Ratio
@@ -101,14 +101,14 @@ additional_beta, additional_sharpe = calculate_beta_sharpe(
 
 # Display comparison
 print("Original Portfolio:")
-print(f"Expected Return: {original_metrics[0]:.2f}")
-print(f"Portfolio Std Dev: {original_metrics[1]:.2f}")
-print(f"Beta: {original_beta:.2f}")
-print(f"Sharpe Ratio: {original_sharpe:.2f}")
+print(f"Expected Return: {original_metrics[0]:.4f}")
+print(f"Portfolio Std Dev: {original_metrics[1]:.4f}")
+print(f"Beta: {original_beta:.4f}")
+print(f"Sharpe Ratio: {original_sharpe:.4f}")
 
 print("\nAdditional Portfolio:")
-print(f"Expected Return: {additional_metrics[0]:.2f}")
-print(f"Portfolio Std Dev: {additional_metrics[1]:.2f}")
-print(f"Beta: {additional_beta:.2f}")
-print(f"Sharpe Ratio: {additional_sharpe:.2f}")
+print(f"Expected Return: {additional_metrics[0]:.4f}")
+print(f"Portfolio Std Dev: {additional_metrics[1]:.4f}")
+print(f"Beta: {additional_beta:.4f}")
+print(f"Sharpe Ratio: {additional_sharpe:.4f}")
 
