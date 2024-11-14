@@ -1,6 +1,11 @@
 import pandas as pd
 import yfinance as yf
 import numpy as np 
+from scipy.stats import gmean
+
+# Start dates - edit as required
+start_date = "2023-11-11"
+end_date = "2024-11-11"
 
 # Load original portfolio
 portf = pd.read_csv("fin456_portfolio_holdings_t0.csv")
@@ -15,7 +20,7 @@ def calculate_portfolio_metrics(portf):
 
     # Fetch data for the tickers in the portfolio
     tickers = stock_rows['TICKER'].tolist()
-    data = yf.download(tickers, start="2019-11-11", end="2024-11-11", interval="1mo")['Adj Close']
+    data = yf.download(tickers, start=start_date, end=end_date, interval="1mo")['Adj Close']
 
     # Calculate monthly returns
     returns = data.pct_change().dropna()
@@ -46,7 +51,8 @@ def calculate_portfolio_metrics(portf):
     weighted_returns = weighted_returns * (1 - cash_weight)
 
     # Expected annual return
-    expected_return = weighted_returns.mean() * 12
+    # expected_return = weighted_returns.mean() * 12 # using arithmetric mean
+    expected_return = (1+weighted_returns).prod()**(12/weighted_returns.size) - 1 # using geometric mean
 
     # Portfolio variance and standard deviation (risk)
     portfolio_variance = np.dot(stock_rows.set_index('TICKER')['Weight'].T, 
@@ -64,13 +70,13 @@ original_metrics = calculate_portfolio_metrics(portf)
 additional_metrics = calculate_portfolio_metrics(additional_portf)
 
 # # Download S&P 500 (or another market index) data
-market_data = yf.download('^GSPC', start="2019-11-11", end="2024-11-11", interval="1mo")['Adj Close']
+market_data = yf.download('^GSPC', start=start_date, end=end_date, interval="1mo")['Adj Close']
 
 # # Calculate market monthly returns
 market_returns = market_data.pct_change().dropna()
 
 # Fetch risk-free rate (10-Year Treasury Yield)
-risk_free_data = yf.download('^TNX', start="2019-11-11", end="2024-11-11", interval="1mo")
+risk_free_data = yf.download('^TNX', start=start_date, end=end_date, interval="1mo")
 risk_free_rate = risk_free_data['Adj Close'].dropna().iloc[-1].item() / 100
 
 # Function to calculate Beta and Sharpe Ratio
