@@ -3,10 +3,10 @@ import yfinance as yf
 import numpy as np 
 
 # Load original portfolio
-portf = pd.read_csv("fin456_portfolio_holdings_t1.csv")
+portf = pd.read_csv("fin456_portfolio_holdings_t0.csv")
 
 # Load additional portfolio
-additional_portf = pd.read_csv("cg_sector_holdings_t1.csv")
+additional_portf = pd.read_csv("fin456_portfolio_holdings_t1.csv")
 
 def calculate_portfolio_metrics(portf):
     # Separate cash and stock rows
