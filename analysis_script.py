@@ -120,7 +120,7 @@ original_beta, original_sharpe = calculate_beta_sharpe(
 )
 
 # Calculate alpha for portfolio
-original_alpha = calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret)
+original_alpha = float(calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret).iloc[0]) # casting as float to fix compatability issues between windows/linux
 
 # Calculate metrics for additional portfolio # uncomment for additional portfolio
 # additional_metrics = calculate_portfolio_metrics(additional_portf)
@@ -130,11 +130,6 @@ original_alpha = calculate_alpha(original_metrics[0],risk_free_rate,original_bet
 # )
 
 # additional_alpha = calculate_alpha(additional_metrics[0],risk_free_rate,additional_beta,market_ret)
-
-
-
-
-
 
 
 # Display comparison
