@@ -1,11 +1,24 @@
 import pandas as pd
 import yfinance as yf
 import numpy as np 
-from scipy.stats import gmean
+import platform
+from datetime import datetime, timedelta
+import pytz
 
-# Start dates - edit as required
-start_date = "2023-11-11" # yyyy-mm-dd
-end_date = "2024-11-11"
+# Get operating system
+os_name = platform.system()
+
+# Get current date 
+current_date = datetime.now(pytz.timezone('America/New_York'))
+
+# Analysis dates
+end_date = (current_date-timedelta(days=1)).strftime("%Y-%m-%d") # yyyy-mm-dd
+start_date = (current_date-timedelta(days=1)).replace(year=current_date.year-1).strftime("%Y-%m-%d") # accounts for leap years and also for yfinance issues with using day-of data
+# currently set to 1 year befored
+
+# start_date = "2023-11-16" # hard coded dates for analysis
+# end_date = "2024-11-16"
+ 
 
 # Load original portfolio
 portf = pd.read_csv("fin456_portfolio_holdings_t0.csv")
@@ -80,6 +93,8 @@ def calculate_beta_sharpe(portfolio_returns, market_returns, risk_free_rate, por
     sharpe_ratio = (expected_return - risk_free_rate) / portfolio_std_dev
     return beta, sharpe_ratio
 
+
+
 def get_exp_ret(ticker, start_date, end_date): # helper function, returns expected return for a given security. doesn't work for a list of securities.
 
     # Download S&P 500 (or another market index) data
@@ -120,7 +135,10 @@ original_beta, original_sharpe = calculate_beta_sharpe(
 )
 
 # Calculate alpha for portfolio
-original_alpha = float(calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret).iloc[0]) # casting as float to fix compatability issues between windows/linux
+if os_name == "Linux": 
+    original_alpha = float(calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret).iloc[0]) # casting as float to fix compatability issues between windows/linux
+else:
+    original_alpha = calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret)
 
 # Calculate metrics for additional portfolio # uncomment for additional portfolio
 # additional_metrics = calculate_portfolio_metrics(additional_portf)
