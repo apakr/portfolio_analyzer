@@ -1,9 +1,21 @@
 TICKER,QUANTITY,SECTOR
-ADM,22,
-BBY,32
-BRC,20
-DIS,5
-MYE,89
-VCR,16
-VDC,29
-YUM,17
+JPM,25.06,Financials
+AMP,31.03,Financials
+SCHW,89.16,Financials
+BRK-B,19.81,Financials
+AAPL,115.55,Consumer Goods
+STLA,263.85,Consumer Goods
+YUM,36.93,Consumer Goods
+PG,45.00,Consumer Goods
+AMR,22.75,Energy
+PWR,80.58,Energy
+XOM,43.19,Energy
+CE,54.38,Energy
+ELV,22.49,Healthcare
+REGN,6.14,Healthcare
+MRK,64.19,Healthcare
+AMAT,128.67,Technology
+GOOG,57.43,Technology
+JBL,34.70,Technology
+ADI,26.43,Technology
+USD,11023.57

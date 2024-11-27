@@ -21,7 +21,7 @@ start_date = (current_date-timedelta(days=1)).replace(year=current_date.year-1).
  
 
 # Load original portfolio
-portf = pd.read_csv("fin456_portfolio_holdings_t0.csv")
+portf = pd.read_csv("pmt_portfolio.csv")
 
 # Load additional portfolio // optional, can be used to compare proposed changes.
 # additional_portf = pd.read_csv("fin456_portfolio_holdings_t1.csv")
