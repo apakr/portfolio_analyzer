@@ -76,8 +76,13 @@ def calculate_portfolio_metrics(portf):
 
     return expected_return, portfolio_std_dev, weighted_returns, cash_weight
 
+# Function to calulate sharpe ratio
+def calc_sharpe_ratio(exp_ret, risk_free_rate, portfolio_std_dev):
+    sharpe_ratio = (exp_ret - risk_free_rate) / portfolio_std_dev
+    return sharpe_ratio
+
 # Function to calculate Beta and Sharpe Ratio
-def calculate_beta_sharpe(portfolio_returns, market_returns, risk_free_rate, portfolio_std_dev, expected_return):
+def calculate_beta(portfolio_returns, market_returns):
     aligned_portfolio_returns, aligned_market_returns = portfolio_returns.align(market_returns, join='inner')
 
     # Ensure aligned_market_returns is a Series
@@ -88,14 +93,11 @@ def calculate_beta_sharpe(portfolio_returns, market_returns, risk_free_rate, por
 
     # Calculate beta
     beta = cov_matrix[0, 1] / cov_matrix[1, 1] # divides cov(apr,amr) by var(amr)
-
-    # Sharpe Ratio
-    sharpe_ratio = (expected_return - risk_free_rate) / portfolio_std_dev
-    return beta, sharpe_ratio
+    return beta
 
 
-
-def get_exp_ret(ticker, start_date, end_date): # helper function, returns expected return for a given security. doesn't work for a list of securities.
+# Function to calculate expected return for a given ticker - "easy" because you just give it a name and it finds the data for you
+def easy_exp_ret(ticker, start_date, end_date): # helper function, returns expected return for a given security. doesn't work for a list of securities.
 
     # Download S&P 500 (or another market index) data
     market_data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")['Adj Close']
@@ -106,6 +108,15 @@ def get_exp_ret(ticker, start_date, end_date): # helper function, returns expect
     expected_return = (1+market_returns).prod()**(12/market_returns.size) - 1 # using geometric mean
 
     return expected_return
+
+# Function to calculate expected return given some data - could be called "hard" because you need to already have the data instead of yfinance doing the work
+def calc_exp_ret(data):
+
+    returns = data.pct_change().dropna()
+
+    expected_return = (1+returns).prod()**(12/returns.size) - 1 # using geometric mean, and also set to monthly right now
+
+    return expected_return # returns a single number value for the expected return given data
 
 # Function to calculate the Alpha
 def calculate_alpha(portf_ret, risk_free_rate, beta, market_ret):
@@ -119,36 +130,37 @@ original_metrics = calculate_portfolio_metrics(portf)
 # # Download S&P 500 (or another market index) data
 market_data = yf.download('^GSPC', start=start_date, end=end_date, interval="1mo")['Adj Close']
 
-# Calculate market monthly returns
+# Calculate market returns at specified frequency (monthly right now)
 market_returns = market_data.pct_change().dropna()
 
-# Calculate exp ret for market
-market_ret = get_exp_ret('^GSPC',start_date,end_date) # working fix, should consolidate all of this market data calculation into one function. rn it downloads the data twice. 
+# Calculate expected return value for the market
+market_ret = calc_exp_ret(market_data)
 
 # Fetch risk-free rate (10-Year Treasury Yield)
 risk_free_data = yf.download('^TNX', start=start_date, end=end_date, interval="1mo")
 risk_free_rate = risk_free_data['Adj Close'].dropna().iloc[-1].item() / 100
 
-# Calculate Beta and Sharpe Ratio
-original_beta, original_sharpe = calculate_beta_sharpe(
-    original_metrics[2], market_returns, risk_free_rate, original_metrics[1], original_metrics[0]
-)
+# Calculate Beta
+original_beta = calculate_beta(
+    original_metrics[2], market_returns
+    )
+
+# Calculate Sharpe
+original_sharpe = calc_sharpe_ratio(
+    original_metrics[0], risk_free_rate, original_metrics[1]
+    )
 
 # Calculate alpha for portfolio
-if os_name == "Linux": 
-    original_alpha = float(calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret).iloc[0]) # casting as float to fix compatability issues between windows/linux
-else:
-    original_alpha = calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret)
+original_alpha = float(calculate_alpha(original_metrics[0],risk_free_rate,original_beta,market_ret).iloc[0])
 
-# Calculate metrics for additional portfolio # uncomment for additional portfolio
+# Calculate metrics for additional portfolio # uncomment for additional portfolio # needs to be updated for function changes
 # additional_metrics = calculate_portfolio_metrics(additional_portf)
 
-# additional_beta, additional_sharpe = calculate_beta_sharpe(  # uncomment for additional portfolio
+# additional_beta, additional_sharpe = calculate_beta(  # uncomment for additional portfolio
 #     additional_metrics[2], market_returns, risk_free_rate, additional_metrics[1], additional_metrics[0]
 # )
 
 # additional_alpha = calculate_alpha(additional_metrics[0],risk_free_rate,additional_beta,market_ret)
-
 
 # Display comparison
 print("Original Portfolio:")
