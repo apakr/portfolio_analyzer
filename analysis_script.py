@@ -1,9 +1,9 @@
-import pandas as pd
-import yfinance as yf
-import numpy as np 
-import platform
-from datetime import datetime, timedelta
-import pytz
+import pandas as pd # version 2.2.3
+import yfinance as yf # version 0.2.49
+import numpy as np # version 2.1.3
+import platform # platformdirs version 4.3.6
+from datetime import datetime, timedelta 
+import pytz # version 2024.2
 import analysis_functs as funct
 
 # Get operating system
