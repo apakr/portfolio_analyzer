@@ -17,17 +17,21 @@ end_date = (current_date-timedelta(days=1)).strftime("%Y-%m-%d") # yyyy-mm-dd
 start_date = (current_date-timedelta(days=1)).replace(year=current_date.year-1).strftime("%Y-%m-%d") # accounts for leap years and also for yfinance issues with using day-of data
 # currently set to 1 year befored
 
+# Frequency
+freq = '1mo'
+# 5m for 5 minutes, 1d for day, 1wk for week, 1mo for month, etc.
+
 # start_date = "2023-11-16" # hard coded dates for analysis
 # end_date = "2024-11-16"
 
 # Load original portfolio
-portf = pd.read_csv("pmt_portfolio.csv")
+portf = pd.read_csv("portfolios/pmt_portfolio.csv")
 
 # Calculate metrics for original portfolio
 original_metrics = funct.calculate_portfolio_metrics(portf, start_date, end_date)
 
 # # Download S&P 500 (or another market index) data
-market_data = yf.download('^GSPC', start=start_date, end=end_date, interval="1mo")['Adj Close']
+market_data = yf.download('^GSPC', start=start_date, end=end_date, interval=freq)['Adj Close']
 
 # Calculate market returns at specified frequency (monthly right now)
 market_returns = market_data.pct_change().dropna()
@@ -36,7 +40,7 @@ market_returns = market_data.pct_change().dropna()
 market_ret = funct.calc_exp_ret(market_data)
 
 # Fetch risk-free rate (10-Year Treasury Yield)
-risk_free_data = yf.download('^TNX', start=start_date, end=end_date, interval="1mo")
+risk_free_data = yf.download('^TNX', start=start_date, end=end_date, interval=freq)
 risk_free_rate = risk_free_data['Adj Close'].dropna().iloc[-1].item() / 100
 
 # Calculate Beta
