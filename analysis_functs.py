@@ -51,7 +51,7 @@ def calculate_portfolio_metrics(portf, start_date, end_date):
     portfolio_variance *= (1 - cash_weight)**2  # Adjust for cash weight
     portfolio_std_dev = np.sqrt(portfolio_variance)
 
-    return expected_return, portfolio_std_dev, weighted_returns, cash_weight
+    return expected_return, portfolio_std_dev, weighted_returns, cash_weight, data, stock_rows
 
 
 # Function to calulate sharpe ratio

@@ -5,6 +5,7 @@ import platform # platformdirs version 4.3.6
 from datetime import datetime, timedelta 
 import pytz # version 2024.2
 import analysis_functs as funct
+import matplotlib.pyplot as plt # version 3.10.0
 
 # Get operating system
 os_name = platform.system()
@@ -18,7 +19,7 @@ start_date = (current_date-timedelta(days=1)).replace(year=current_date.year-1).
 # currently set to 1 year befored
 
 # Frequency
-freq = '1mo'
+freq = '1d'
 # 5m for 5 minutes, 1d for day, 1wk for week, 1mo for month, etc.
 
 # start_date = "2023-11-16" # hard coded dates for analysis
@@ -64,5 +65,37 @@ print(f"Beta: {original_beta:.4f}")
 print(f"Sharpe Ratio: {original_sharpe:.4f}")
 print(f"Alpha: {original_alpha:.4f}")
 
+# print(original_metrics[4])
 
+### Optional plots
+plot = True
+if (plot):
 
+    fig, axes = plt.subplots(3,1,figsize=(10,15))
+
+    # Individual pct change in stocks since start date
+    # plt.figure()
+    indv_stocks_growth = original_metrics[4].div(original_metrics[4].iloc[0], axis = 1)
+    indv_stocks_growth.plot(ax=axes[0])
+    axes[0].set_title("Individual pct change since start date")
+    # indv_stocks_growth.plot(figsize=(10,8))
+    # plt.title("Indivdual pct change since start date")
+    # plt.show()
+
+    # Individual total investment changes in each stock
+    # plt.figure()
+    indv_stocks_growth_price = original_metrics[4].mul(original_metrics[5].set_index("TICKER")["QUANTITY"], axis=1)
+    indv_stocks_growth_price.plot(ax=axes[1])
+    axes[1].set_title("Individual total investment changes since start date")
+
+    # isgp = indv_stocks_growth_price.plot(figsize=(10,8))
+    # plt.title("Indivudal total change since start date")
+    # plt.show()
+
+    # Total portfolio pct change since start date
+    indv_stocks_growth_price.sum(axis=1).plot(ax=axes[2])
+    axes[2].set_title("Portfolio over time")
+    axes[2].set_ylim(0,None)
+
+    plt.tight_layout()
+    plt.show()
