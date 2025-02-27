@@ -31,7 +31,7 @@ portf = pd.read_csv("portfolios/pmt_portfolio.csv")
 original_metrics = funct.calculate_portfolio_metrics(portf, start_date, end_date)
 
 # # Download S&P 500 (or another market index) data
-market_data = yf.download('^GSPC', start=start_date, end=end_date, interval=freq)['Adj Close']
+market_data = yf.download('^GSPC', start=start_date, end=end_date, interval=freq)['Close']
 
 # Calculate market returns at specified frequency (monthly right now)
 market_returns = market_data.pct_change().dropna()
@@ -41,7 +41,7 @@ market_ret = funct.calc_exp_ret(market_data)
 
 # Fetch risk-free rate (10-Year Treasury Yield)
 risk_free_data = yf.download('^TNX', start=start_date, end=end_date, interval=freq)
-risk_free_rate = risk_free_data['Adj Close'].dropna().iloc[-1].item() / 100
+risk_free_rate = risk_free_data['Close'].dropna().iloc[-1].item() / 100
 
 # Calculate Beta
 original_beta = funct.calculate_beta(

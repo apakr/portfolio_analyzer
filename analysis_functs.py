@@ -10,7 +10,7 @@ def calculate_portfolio_metrics(portf, start_date, end_date):
 
     # Fetch data for the tickers in the portfolio
     tickers = stock_rows['TICKER'].tolist()
-    data = yf.download(tickers, start=start_date, end=end_date, interval="1mo")['Adj Close']
+    data = yf.download(tickers, start=start_date, end=end_date, interval="1mo")['Close']
 
     # Calculate monthly returns
     returns = data.pct_change().dropna()
@@ -79,7 +79,7 @@ def calculate_beta(portfolio_returns, market_returns):
 def easy_exp_ret(ticker, start_date, end_date): # helper function, returns expected return for a given security. doesn't work for a list of securities.
 
     # Download S&P 500 (or another market index) data
-    market_data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")['Adj Close']
+    market_data = yf.download(ticker, start=start_date, end=end_date, interval="1mo")['Close']
 
     # Calculate market monthly returns
     market_returns = market_data.pct_change().dropna()
