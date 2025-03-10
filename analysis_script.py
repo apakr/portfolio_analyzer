@@ -68,7 +68,7 @@ print(f"Alpha: {original_alpha:.4f}")
 # print(original_metrics[4])
 
 ### Optional plots
-plot = True
+plot = False
 if (plot):
 
     fig, axes = plt.subplots(3,1,figsize=(10,15))
