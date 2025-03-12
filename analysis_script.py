@@ -1,32 +1,28 @@
 import pandas as pd # version 2.2.3
 import yfinance as yf # version 0.2.49
 import numpy as np # version 2.1.3
-import platform # platformdirs version 4.3.6
 from datetime import datetime, timedelta 
 import pytz # version 2024.2
 import analysis_functs as funct
 import matplotlib.pyplot as plt # version 3.10.0
-
-# Get operating system
-os_name = platform.system()
 
 # Get current date 
 current_date = datetime.now(pytz.timezone('America/Chicago'))
 
 # Analysis dates
 end_date = (current_date-timedelta(days=1)).strftime("%Y-%m-%d") # yyyy-mm-dd
-start_date = (current_date-timedelta(days=1)).replace(year=current_date.year-1).strftime("%Y-%m-%d") # accounts for leap years and also for yfinance issues with using day-of data
+start_date = (current_date-timedelta(days=1)).replace(year=current_date.year-5).strftime("%Y-%m-%d") # accounts for leap years and also for yfinance issues with using day-of data
 # currently set to 1 year befored
 
 # Frequency
-freq = '1d'
+freq = '1mo'
 # 5m for 5 minutes, 1d for day, 1wk for week, 1mo for month, etc.
 
 # start_date = "2023-11-16" # hard coded dates for analysis
 # end_date = "2024-11-16"
 
 # Load original portfolio
-portf = pd.read_csv("portfolios/pmt_portfolio.csv")
+portf = pd.read_csv("portfolios/crypto.csv")
 
 # Calculate metrics for original portfolio
 original_metrics = funct.calculate_portfolio_metrics(portf, start_date, end_date)
@@ -68,7 +64,7 @@ print(f"Alpha: {original_alpha:.4f}")
 # print(original_metrics[4])
 
 ### Optional plots
-plot = False
+plot = True
 if (plot):
 
     fig, axes = plt.subplots(3,1,figsize=(10,15))

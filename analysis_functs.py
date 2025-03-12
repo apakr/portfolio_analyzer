@@ -102,3 +102,6 @@ def calculate_alpha(portf_ret, risk_free_rate, beta, market_ret):
     # Alpha = R - Rf - beta (Rm - Rf) ... R is the portf_ret, Rf is the risk_free_rate, beta is the systematic risk of the portfolio, Rm is the market return.
     alpha = portf_ret - risk_free_rate - beta*(market_ret-risk_free_rate)
     return alpha
+
+# def portf_value(portf, now):
+#     cash_rows = 
